@@ -70,8 +70,18 @@ class BikeShareApp < Sinatra::Base
     redirect "bs.png"
   end
 
+### use href="/trips?page_number=#{@page_number +/- 1}"
+### to build "NEXT" and "PREVIOUS" buttons
+###
   get '/trips' do
-    @trips = Trip.all
+    @page_number = params['page_number']
+    if @page_number.nil?
+      @page_number = 1
+    end
+
+    page_size = 30
+    @page_number = @page_number.to_i - 1
+    @trips = Trip.limit(page_size).offset(@page_number * page_size)
     erb :"/trips/index"
   end
 
